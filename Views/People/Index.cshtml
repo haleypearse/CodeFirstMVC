@@ -1,0 +1,61 @@
+﻿@model IEnumerable<CodeFirstMVC.Models.Person>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Inside the Robot's Mind</h2>
+
+<p>
+    @Html.ActionLink("Meet the Friendly Robot", "Create")
+</p>
+
+@using (Html.BeginForm("Index", "People", FormMethod.Get)) //Use the Get method so search parameters are preserved in URI
+{
+    <p class="form-inline">
+        Filter Results: @Html.TextBox("SearchString", "", new { @class = "form-control" })
+        <input type="submit" value="Filter" class="btn btn-default" />
+    </p>
+}
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TimesMet)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.WhenMet)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LastMet)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimesMet)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WhenMet)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastMet)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { name = item.Name }) |
+                @Html.ActionLink("Details", "Details", new { name = item.Name }) |
+                @Html.ActionLink("Delete", "Delete", new { name = item.Name })
+            </td>
+        </tr>
+    }
+
+</table>
