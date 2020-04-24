@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System; 
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using CodeFirstMVC.Models;
+using Humanizer;
+using Microsoft.Ajax.Utilities;
 
 namespace CodeFirstMVC.Controllers.Api
 {
@@ -22,6 +24,13 @@ namespace CodeFirstMVC.Controllers.Api
         [HttpGet]
         public IEnumerable<Person> GetPeople()
         {
+            // Try humanizing the dates. Doesn't work, can't convert date to string.
+            //var people = db.People;
+            //foreach (var person in people)
+            //{
+            //    person.WhenMet = person.WhenMet.Humanize();
+            //}
+            //return people;
             return db.People;
         }
 

@@ -15,8 +15,8 @@ namespace CodeFirstMVC
 
             routes.MapRoute(
                 name: "Default",
-                url: "{controller}/{action}/{id}",
-                defaults: new { controller = "People", action = "Create", id = UrlParameter.Optional }
+                url: "{controller}/{action}/{name}",
+                defaults: new { controller = "People", action = "Create", name = UrlParameter.Optional }
             );
         }
     }

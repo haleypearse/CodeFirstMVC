@@ -21,7 +21,8 @@ namespace CodeFirstMVC
         {
             //var x = db.Database.Connection.ConnectionString;
 
-            return View(db.People.ToList());
+            //return View(db.People.ToList());
+            return View();  //Getting list from Api now. No need to return it.
         }
 
         // GET: People/Details/5
