@@ -5,20 +5,12 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Inside the Robot's Mind</h2>
+<h2>Index</h2>
 
 <p>
-    @Html.ActionLink("Meet the Friendly Robot", "Create")
+    @Html.ActionLink("Create New", "Create")
 </p>
-
-@using (Html.BeginForm("Index", "People", FormMethod.Get)) //Use the Get method so search parameters are preserved in URI
-{
-    <p class="form-inline">
-        Filter Results: @Html.TextBox("SearchString", "", new { @class = "form-control" })
-        <input type="submit" value="Filter" class="btn btn-default" />
-    </p>
-}
-<table class="table">
+<table id="people" class="table table-bordered table-hover">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.Name)
@@ -29,33 +21,46 @@
         <th>
             @Html.DisplayNameFor(model => model.WhenMet)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.LastMet)
-        </th>
         <th></th>
     </tr>
 
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TimesMet)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.WhenMet)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastMet)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { name = item.Name }) |
-                @Html.ActionLink("Details", "Details", new { name = item.Name }) |
-                @Html.ActionLink("Delete", "Delete", new { name = item.Name })
-            </td>
-        </tr>
-    }
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TimesMet)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.WhenMet)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Name }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Name }) |
+            @*@Html.ActionLink("Delete", "Delete", new { id=item.Name })*@
+            <button data-person-name="@item.Name" class="js-delete">Delete</button>
+        </td>
+    </tr>
+}
 
 </table>
+
+@section scripts 
+    {
+    <script>
+        $(document).ready(function () {
+            $("#people .js-delete").on("click", function () {
+                if (confirm("Sure you want to delete?")) {
+                    $.ajax({
+                        url: "/api/people/" + $(this.attr("data-person-name"),
+                            method: "DELETE",
+                            success: function () {
+                                console.log("delete success.");
+                            })
+                    })
+                }
+            })
+        })
+    </script>
+    }

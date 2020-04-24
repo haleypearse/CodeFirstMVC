@@ -1,54 +1,139 @@
-﻿using CodeFirstMVC.Models;
-using Microsoft.Ajax.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.Remoting.Contexts;
+using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Description;
+using CodeFirstMVC.Models;
 
 namespace CodeFirstMVC.Controllers.Api
 {
     public class PeopleController : ApiController
     {
-        // DbSet<Person> People { get; set; }
+        //private ApplicationDbContext db = new ApplicationDbContext();
+        private MyContext db = new MyContext();
 
-        public ApplicationDbContext _context;
-
-        public PeopleController()
-        {
-            _context = new ApplicationDbContext();
-        }
-
-        // Get/Api/People
+        // GET: api/People
+        [HttpGet]
         public IEnumerable<Person> GetPeople()
         {
-            return new List<Person> { new Person { Name = "yin" }, new Person { Name = "yang" } };
-            
-            //return new string[] { "value 1", "value 2" };
-
+            return db.People;
         }
-        //public class ApiContext : DbContext
-        //{
-        //    public ApiContext()// : base("MyContext")
-        //    {
-        //    }
-            
-        //}
 
+        // GET: api/People/5
+        [HttpGet]
+        [ResponseType(typeof(Person))]
+        public async Task<IHttpActionResult> GetPerson(string id)
+        {
+            Person person = await db.People.FindAsync(id);
+            if (person == null)
+            {
+                return NotFound();
+            }
 
-        //private DbContext _context;
-        //public PeopleController()
-        //{
-        //    _context = new DbContext();
-        //}
-        //// Get/Api/People
-        //public IEnumerable<Person> GetPeople()
-        //{
-        //    return _context.People.ToList();
-        //}
+            return Ok(person);
+        }
+
+        // PUT: api/People/5
+        [HttpPut]
+        [ResponseType(typeof(void))]
+        public async Task<IHttpActionResult> PutPerson(string id, Person person)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != person.Name)
+            {
+                return BadRequest();
+            }
+
+            db.Entry(person).State = EntityState.Modified;
+
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PersonExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
+        // POST: api/People
+        [HttpPost]
+        [ResponseType(typeof(Person))]
+        public async Task<IHttpActionResult> PostPerson(Person person)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            db.People.Add(person);
+
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (PersonExists(person.Name))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return CreatedAtRoute("DefaultApi", new { id = person.Name }, person);
+        }
+
+        // DELETE: api/People/5
+        [ResponseType(typeof(Person))]
+        public async Task<IHttpActionResult> DeletePerson(string id)
+        {
+            Person person = await db.People.FindAsync(id);
+            if (person == null)
+            {
+                return NotFound();
+            }
+
+            db.People.Remove(person);
+            await db.SaveChangesAsync();
+
+            return Ok(person);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        private bool PersonExists(string id)
+        {
+            return db.People.Count(e => e.Name == id) > 0;
+        }
     }
 }
- 

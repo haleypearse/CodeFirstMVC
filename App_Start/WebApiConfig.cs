@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Serialization;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace CodeFirstMVC
         {
             var settings = config.Formatters.JsonFormatter.SerializerSettings;
             settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            //settings.Formatting = Formatting.Indented;
+            //settings.Formatting = JsonSerializerSettings.Formatting.Indented;
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(

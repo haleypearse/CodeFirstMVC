@@ -1,4 +1,6 @@
-﻿using CodeFirstMVC.Models;
+﻿using AutoMapper;
+using CodeFirstMVC.App_Start;
+using CodeFirstMVC.Models;
 using Serilog;
 using Serilog.Core;
 using System;
@@ -16,6 +18,7 @@ namespace CodeFirstMVC
     {
         protected void Application_Start()
         {
+            Mapper.Initialize(c => c.AddProfile<MappingProfile>()); 
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
 

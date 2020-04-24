@@ -3,35 +3,32 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CodeFirstMVC.Models;
-using Humanizer;
-using Serilog;
 
-namespace CodeFirstMVC
+namespace CodeFirstMVC.Controllers.Api
 {
     public class PeopleController : Controller
     {
-        private MyContext db = new MyContext();
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: People
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            //var x = db.Database.Connection.ConnectionString;
-
-            return View(db.People.ToList());
+            return View(await db.People.ToListAsync());
         }
 
         // GET: People/Details/5
-        public ActionResult Details(string name)
+        public async Task<ActionResult> Details(string id)
         {
-            if (name == null)
+            if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Person person = db.People.Find(name);
+            Person person = await db.People.FindAsync(id);
             if (person == null)
             {
                 return HttpNotFound();
@@ -46,51 +43,30 @@ namespace CodeFirstMVC
         }
 
         // POST: People/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Name,TimesMet,WhenMet")] Person person)
+        public async Task<ActionResult> Create([Bind(Include = "Name,LuckyNumber,TimesMet,WhenMet,LastMet")] Person person)
         {
-            var query = db.People.Find(person.Name);
-
-            
             if (ModelState.IsValid)
             {
-                if (query == null) // person not in db
-                {
-                    person.TimesMet = 1;
-                    person.WhenMet = DateTime.UtcNow;
-                    person.Name = person.Name.Transform(To.TitleCase); //Capitalize name
-                    //db.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.People ON");
-                    db.People.Add(person);
-                    Log.Information("Created a new person: {person}", person.Name);
-
-                }
-                else {
-                    person = query;
-                    person.TimesMet += 1;
-                    Log.Information("Met {person} {times} times now.", person.Name, person.TimesMet+1); 
-                }
-                ViewBag.LastMet = person.LastMet.Humanize();
-
-                person.LastMet = DateTime.UtcNow;
-                db.SaveChanges();
-                ViewBag.TimesMet = person.TimesMet.ToOrdinalWords(); 
-
-
-                // return RedirectToAction("Index");
+                db.People.Add(person);
+                await db.SaveChangesAsync();
+                return RedirectToAction("Index");
             }
 
             return View(person);
         }
 
         // GET: People/Edit/5
-        public ActionResult Edit(string name)
+        public async Task<ActionResult> Edit(string id)
         {
-            if (name == null)
+            if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Person person = db.People.Find(name);
+            Person person = await db.People.FindAsync(id);
             if (person == null)
             {
                 return HttpNotFound();
@@ -103,25 +79,25 @@ namespace CodeFirstMVC
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "PersonId,Name,TimesMet,WhenMet")] Person person)
+        public async Task<ActionResult> Edit([Bind(Include = "Name,LuckyNumber,TimesMet,WhenMet,LastMet")] Person person)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(person).State = EntityState.Modified;
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             return View(person);
         }
 
         // GET: People/Delete/5
-        public ActionResult Delete(int? id)
+        public async Task<ActionResult> Delete(string id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Person person = db.People.Find(id);
+            Person person = await db.People.FindAsync(id);
             if (person == null)
             {
                 return HttpNotFound();
@@ -132,11 +108,11 @@ namespace CodeFirstMVC
         // POST: People/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public async Task<ActionResult> DeleteConfirmed(string id)
         {
-            Person person = db.People.Find(id);
+            Person person = await db.People.FindAsync(id);
             db.People.Remove(person);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 

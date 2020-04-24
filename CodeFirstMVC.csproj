@@ -46,6 +46,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=4.1.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>packages\AutoMapper.4.1.0\lib\net45\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.6.4.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -153,11 +156,13 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\MappingProfile.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\Api\ApplicationDbContext.cs" />
     <Compile Include="Controllers\Api\PeopleController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PeopleController.cs" />
     <Compile Include="Dtos\PersonDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -186,10 +191,17 @@
     <Compile Include="Migrations\202004211523137_DropId.designer.cs">
       <DependentUpon>202004211523137_DropId.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004221652477_WebApi.cs" />
+    <Compile Include="Migrations\202004221652477_WebApi.designer.cs">
+      <DependentUpon>202004221652477_WebApi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004240004576_MakeTimesNullable.cs" />
+    <Compile Include="Migrations\202004240004576_MakeTimesNullable.designer.cs">
+      <DependentUpon>202004240004576_MakeTimesNullable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\MyContext.cs" />
     <Compile Include="Models\Person.cs" />
-    <Compile Include="Controllers\PeopleController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -268,6 +280,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004211523137_DropId.resx">
       <DependentUpon>202004211523137_DropId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004221652477_WebApi.resx">
+      <DependentUpon>202004221652477_WebApi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004240004576_MakeTimesNullable.resx">
+      <DependentUpon>202004240004576_MakeTimesNullable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
