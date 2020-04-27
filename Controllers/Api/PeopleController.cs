@@ -22,8 +22,18 @@ namespace CodeFirstMVC.Controllers.Api
 
         // GET: api/People
         [HttpGet]
-        public IEnumerable<Person> GetPeople()
+        public IEnumerable<Person> GetPeople(string searchString)
         {
+            var people = db.People.Where(x => true);
+            if (searchString != null)
+            {
+                //var query = 
+                //    from p in people
+                //    where p.Name contains searchString
+                //    select p;
+
+                people = people.Where(x => x.Name.Contains(searchString) || x.TimesMet.ToString() == searchString);
+            }
             // Try humanizing the dates. Doesn't work, can't convert date to string.
             //var people = db.People;
             //foreach (var person in people)
@@ -31,15 +41,15 @@ namespace CodeFirstMVC.Controllers.Api
             //    person.WhenMet = person.WhenMet.Humanize();
             //}
             //return people;
-            return db.People;
+            return people;
         }
 
         // GET: api/People/5
         [HttpGet]
         [ResponseType(typeof(Person))]
-        public async Task<IHttpActionResult> GetPerson(string id)
+        public async Task<IHttpActionResult> GetPerson(string name)
         {
-            Person person = await db.People.FindAsync(id);
+            Person person = await db.People.FindAsync(name);
             if (person == null)
             {
                 return NotFound();

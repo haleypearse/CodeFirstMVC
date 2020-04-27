@@ -17,12 +17,13 @@ namespace CodeFirstMVC
         private MyContext db = new MyContext();
 
         // GET: People
-        public ActionResult Index()
+        public ActionResult Index(string searchString)
         {
             //var x = db.Database.Connection.ConnectionString;
 
             //return View(db.People.ToList());
-            return View();  //Getting list from Api now. No need to return it.
+            ViewBag.searchString = searchString;
+            return View();  //Getting list from Api now. No need to return it here.
         }
 
         // GET: People/Details/5
@@ -56,12 +57,12 @@ namespace CodeFirstMVC
             
             if (ModelState.IsValid)
             {
-                if (query == null) // person not in db
+                if (query == null) // person not in db, add them
                 {
                     person.TimesMet = 1;
                     person.WhenMet = DateTime.UtcNow;
                     person.Name = person.Name.Transform(To.TitleCase); //Capitalize name
-                    //db.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.People ON");
+                    //db.Database.ExecuteSqlCommand("SET IDENTITY_INSERT dbo.People ON"); //this never worked
                     db.People.Add(person);
                     Log.Information("Created a new person: {person}", person.Name);
 
