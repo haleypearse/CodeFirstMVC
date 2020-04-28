@@ -9,6 +9,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using AutoMapper;
+using CodeFirstMVC.Dtos;
 using CodeFirstMVC.Models;
 using Humanizer;
 using Microsoft.Ajax.Utilities;
@@ -22,7 +24,7 @@ namespace CodeFirstMVC.Controllers.Api
 
         // GET: api/People
         [HttpGet]
-        public IEnumerable<Person> GetPeople(string searchString)
+        public IEnumerable<PersonDto> GetPeople(string searchString)
         {
             var people = db.People.Where(x => true);
             if (searchString != null)
@@ -41,7 +43,7 @@ namespace CodeFirstMVC.Controllers.Api
             //    person.WhenMet = person.WhenMet.Humanize();
             //}
             //return people;
-            return people;
+            return people.ToList().Select(Mapper.Map<Person, PersonDto>);
         }
 
         // GET: api/People/5
@@ -54,21 +56,21 @@ namespace CodeFirstMVC.Controllers.Api
             {
                 return NotFound();
             }
-
-            return Ok(person);
+            //return Ok(person);
+            return Ok(Mapper.Map<Person, PersonDto>(person));
         }
 
         // PUT: api/People/5
         [HttpPut]
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutPerson(string id, Person person)
+        public async Task<IHttpActionResult> PutPerson(string name, Person person)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != person.Name)
+            if (name != person.Name)
             {
                 return BadRequest();
             }
@@ -81,7 +83,7 @@ namespace CodeFirstMVC.Controllers.Api
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PersonExists(id))
+                if (!PersonExists(name))
                 {
                     return NotFound();
                 }
@@ -122,14 +124,14 @@ namespace CodeFirstMVC.Controllers.Api
                 }
             }
 
-            return CreatedAtRoute("DefaultApi", new { id = person.Name }, person);
+            return CreatedAtRoute("DefaultApi", new { name = person.Name }, person);
         }
 
         // DELETE: api/People/5
         [ResponseType(typeof(Person))]
-        public async Task<IHttpActionResult> DeletePerson(string id)
+        public async Task<IHttpActionResult> DeletePerson(string name)
         {
-            Person person = await db.People.FindAsync(id);
+            Person person = await db.People.FindAsync(name);
             if (person == null)
             {
                 return NotFound();
@@ -150,9 +152,9 @@ namespace CodeFirstMVC.Controllers.Api
             base.Dispose(disposing);
         }
 
-        private bool PersonExists(string id)
+        private bool PersonExists(string name)
         {
-            return db.People.Count(e => e.Name == id) > 0;
+            return db.People.Count(e => e.Name == name) > 0;
         }
     }
 }

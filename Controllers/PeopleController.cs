@@ -23,6 +23,7 @@ namespace CodeFirstMVC
 
             //return View(db.People.ToList());
             ViewBag.searchString = searchString;
+            ViewBag.now = DateTime.UtcNow;
             return View();  //Getting list from Api now. No need to return it here.
         }
 

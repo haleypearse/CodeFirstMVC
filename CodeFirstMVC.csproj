@@ -17,7 +17,7 @@
     <AssemblyName>CodeFirstMVC</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
-    <UseIISExpress>true</UseIISExpress>
+    <UseIISExpress>false</UseIISExpress>
     <Use64BitIISExpress />
     <IISExpressSSLPort>44353</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
@@ -480,7 +480,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>3650</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost:44353/</IISUrl>
+          <IISUrl>http://localhost/CodeFirstMVC</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
