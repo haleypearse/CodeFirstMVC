@@ -198,6 +198,10 @@
     <Compile Include="Migrations\202004240004576_MakeTimesNullable.designer.cs">
       <DependentUpon>202004240004576_MakeTimesNullable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004282342402_GenericUpdate.cs" />
+    <Compile Include="Migrations\202004282342402_GenericUpdate.designer.cs">
+      <DependentUpon>202004282342402_GenericUpdate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\MyContext.cs" />
     <Compile Include="Models\Person.cs" />
@@ -460,6 +464,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004240004576_MakeTimesNullable.resx">
       <DependentUpon>202004240004576_MakeTimesNullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004282342402_GenericUpdate.resx">
+      <DependentUpon>202004282342402_GenericUpdate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

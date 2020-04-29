@@ -23,25 +23,17 @@ namespace CodeFirstMVC.Controllers.Api
         private MyContext db = new MyContext();
 
         // GET: api/People
-        [HttpGet]
-        public IEnumerable<PersonDto> GetPeople(string searchString)
+        //[HttpGet]
+        //[ResponseType(typeof(IEnumerable<Person>))]
+
+        //public IEnumerable<Person> GetPeople(string searchString=null)
+        public IEnumerable<PersonDto> GetPeople(string searchString=null)
         {
             var people = db.People.Where(x => true);
             if (searchString != null)
             {
-                //var query = 
-                //    from p in people
-                //    where p.Name contains searchString
-                //    select p;
-
                 people = people.Where(x => x.Name.Contains(searchString) || x.TimesMet.ToString() == searchString);
             }
-            // Try humanizing the dates. Doesn't work, can't convert date to string.
-            //var people = db.People;
-            //foreach (var person in people)
-            //{
-            //    person.WhenMet = person.WhenMet.Humanize();
-            //}
             //return people;
             return people.ToList().Select(Mapper.Map<Person, PersonDto>);
         }
@@ -78,7 +70,7 @@ namespace CodeFirstMVC.Controllers.Api
             db.Entry(person).State = EntityState.Modified;
 
             try
-            {
+            { 
                 await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)

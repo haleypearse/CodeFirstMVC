@@ -41,34 +41,10 @@
         </tr>
     </thead>
 
-    <tbody>
+    <tbody> @*This gets filled in by datatables.*@
     </tbody>
 
-    @*@foreach (var item in Model)
-            {
-                <tbody>
-                                <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Name)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.TimesMet)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.WhenMet)
-                                    </td>
-                                    <td>
-                                        @Html.ActionLink("Edit", "Edit", new { id = item.Name }) |
-                                        @Html.ActionLink("Details", "Details", new { id = item.Name }) |
-                                        <button data-person-name="@item.Name" class="js-delete">Delete</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-        }*@
-
 </table>
-
-
 
 @section scripts
                 {
@@ -78,11 +54,9 @@
             var now = "@ViewBag.now"
         console.log(now);
             //var field = $("#filter-field");
-
-
             var table = $("#people").DataTable({ //config object
                 "ajax": {
-                    "url": "/api/people/?searchString=" + $("#filter-field").val(),
+                    "url": "/CodeFirstMVC/api/people?searchString=" + $("#filter-field").val(),
                     "dataSrc": ""
                 },
                 "columns": [
@@ -138,6 +112,7 @@
 
                 //});
 
+
             });
 
 
@@ -149,8 +124,10 @@
                             url: "/api/people/" + $(button).attr("data-person-name"),
                             method: "DELETE",
                             success: function () {
-                                console.log("success filter button");
+                                //console.log("success filter button");
                                 // button.parents("tr").remove();
+                                // TODO: remove from the table
+                                //      table.render();
                             }
                         })
                     }
