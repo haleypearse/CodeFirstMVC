@@ -56,7 +56,7 @@
             //var field = $("#filter-field");
             var table = $("#people").DataTable({ //config object
                 "ajax": {
-                    "url": "/CodeFirstMVC/api/people?searchString=" + $("#filter-field").val(),
+                    "url": "/api/people?searchString=" + $("#filter-field").val(),
                     "dataSrc": ""
                 },
                 "columns": [

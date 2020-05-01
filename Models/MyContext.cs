@@ -9,11 +9,10 @@ namespace CodeFirstMVC.Models
 {
     public class MyContext: DbContext
     {
-        public MyContext()// : base("MyContext")
+        public MyContext() : base("PeopleDataBase")
         {
-            Debug.Write(Database.Connection.ConnectionString + " <=== from MyContext ");
-
-            this.Database.Log = s => System.Diagnostics.Debug.WriteLine(s + " <=== MyContext Database.Log ");
+            Debug.Write(Database.Connection.ConnectionString + " from MyContext ===> ");
+            this.Database.Log = s => System.Diagnostics.Debug.WriteLine(s + " MyContext Database.Log ===> ");
         }
         public DbSet<Person> People { get; set; }
     }
