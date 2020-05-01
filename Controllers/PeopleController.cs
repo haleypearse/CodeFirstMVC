@@ -106,7 +106,7 @@ namespace CodeFirstMVC
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "PersonId,Name,TimesMet,WhenMet")] Person person)
+        public ActionResult Edit([Bind(Include = "Name,TimesMet,WhenMet")] Person person)
         {
             if (ModelState.IsValid)
             {

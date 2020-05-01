@@ -50,13 +50,14 @@
                 {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script>
+        var uri = '/CodeFirstMVC/api/people';
         $(document).ready(function () {
             var now = "@ViewBag.now"
         console.log(now);
             //var field = $("#filter-field");
             var table = $("#people").DataTable({ //config object
                 "ajax": {
-                    "url": "/api/people?searchString=" + $("#filter-field").val(),
+                    "url": uri + "?searchString=" + $("#filter-field").val(),
                     "dataSrc": ""
                 },
                 "columns": [
