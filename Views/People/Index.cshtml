@@ -24,23 +24,23 @@
     </p>*@
 <table id="people" class="table table-bordered table-hover">
     <thead>
-        <tr>
+        <tr class="column-headers">
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                <a id="first">@Html.DisplayNameFor(model => model.Name)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TimesMet)
+                <a>@Html.DisplayNameFor(model => model.TimesMet)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.WhenMet)
+                <a>@Html.DisplayNameFor(model => model.WhenMet)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LastMet)
+                <a>@Html.DisplayNameFor(model => model.LastMet)</a>
             </th>
         </tr>
     </thead>
 
-    <tbody id="table-body"> @*This gets filled in by datatables.*@
+    <tbody id="table-body"> @*This gets filled in *@
     </tbody>
 
 </table>
@@ -53,13 +53,23 @@
     
 <script>
     const uriBase = '/CodeFirstMVC/api/people';
-    const request = new XMLHttpRequest();
     const field = $("#filter-field");
+    const button = $("#filter-button");
     const dateFormat = "LLL";
+    const request = new XMLHttpRequest();
+    const columnAnchorCollection = $('.column-headers a');
+    //const columnAnchorCollection = document.getElementsByTagName('a');
     
     $(document).ready(function () {
-        $("#filter-button").on("click", () => getTable());
 
+        // Query db upon button press
+        //console.log(button);
+        button.on("click", () => getTable());
+
+        // Query db upon each keystroke
+        field.on('change keydown paste input', () => {getTable();});
+
+        // Query db upon pressing enter and prevent form submit
         $(window).keydown(function (event) {
             if (event.keyCode == 13) {
                 event.preventDefault(); //Don't submit the form
@@ -84,9 +94,6 @@
                         table += "<th>" + person["name"] + "</th>";
                         table += "<th>" + person["timesMet"] + "</th>";
 
-                        //moment(date).format("L LT");
-
-                        //table += "<th>" + person["whenMet"] + "</th>";
                         table += "<th>" + moment(person["whenMet"]).format(dateFormat) + "</th>";
                         table += "<th>" + moment(person["lastMet"]).format(dateFormat) + "</th>";
 
@@ -106,21 +113,36 @@
             var uri = uriBase;
 
             var val = field.val();
-            if (val != "") { uri += "?searchString=" + val}
+            uri += "?searchString=" + val;
 
+            uri += "&sort=" + sort["column"] + "&asc=" + sort["asc"];
 
             return uri;
         }
 
+        function addColumnSortLinks() {
+            for (var a of columnAnchorCollection) {
+                a.addEventListener("click", clickSortHandler);
+            }
+        }
+        var sort = { "column": "name", "asc": false };
+        console.log(sort);
+        //Click sort handler
+
+        function clickSortHandler() {
+            var paramName = this.innerHTML.replace(/\s/g, ''); //Strip white space
+            
+            if (sort["column"] == paramName) { 
+                sort["asc"] = !sort["asc"]; //If already applied, swap order
+            }
+            else sort["column"] = paramName; //Apply new sort column
+
+            getTable(); //Refresh the table
+
+        }
+
+        addColumnSortLinks();
         getTable()
-
     });
-
-    
-
-    
-
-
-
 </script>
 }

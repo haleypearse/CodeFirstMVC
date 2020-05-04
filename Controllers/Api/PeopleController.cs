@@ -27,12 +27,31 @@ namespace CodeFirstMVC.Controllers.Api
         //[ResponseType(typeof(IEnumerable<Person>))]
 
         //public IEnumerable<Person> GetPeople(string searchString=null)
-        public IEnumerable<PersonDto> GetPeople(string searchString=null)
+        public IEnumerable<PersonDto> GetPeople(string searchString=null,string sort="name", bool asc=true)
         {
             var people = db.People.Where(x => true);
             if (searchString != null)
             {
                 people = people.Where(x => x.Name.Contains(searchString) || x.TimesMet.ToString() == searchString);
+            }
+            switch (sort)
+            {
+                case "TimesMet":
+                    if (asc == true) people = people.OrderBy(x => x.TimesMet);
+                    else people = people.OrderByDescending(x => x.TimesMet);
+                    break;
+                case "WhenMet":
+                    if (asc == true) people = people.OrderBy(x => x.WhenMet);
+                    else people = people.OrderByDescending(x => x.WhenMet);
+                    break;
+                case "LastMet":
+                    if (asc == true) people = people.OrderBy(x => x.LastMet);
+                    else people = people.OrderByDescending(x => x.LastMet);
+                    break;
+                default:
+                    if (asc == true) people = people.OrderBy(x => x.Name);
+                    else people = people.OrderByDescending(x => x.Name);
+                    break;
             }
             //return people;
             return people.ToList().Select(Mapper.Map<Person, PersonDto>);
