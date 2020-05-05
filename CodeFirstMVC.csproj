@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\Microsoft.TypeScript.MSBuild.3.8.3\build\Microsoft.TypeScript.MSBuild.props" Condition="Exists('packages\Microsoft.TypeScript.MSBuild.3.8.3\build\Microsoft.TypeScript.MSBuild.props')" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="packages\EntityFramework.6.4.0\build\EntityFramework.props" Condition="Exists('packages\EntityFramework.6.4.0\build\EntityFramework.props')" />
   <Import Project="packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -26,6 +28,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TypeScriptToolsVersion>3.8</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -166,39 +169,24 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202004202040098_InitialCreate.cs" />
-    <Compile Include="Migrations\202004202040098_InitialCreate.designer.cs">
-      <DependentUpon>202004202040098_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\202005011832448_Initial.cs" />
+    <Compile Include="Migrations\202005011832448_Initial.designer.cs">
+      <DependentUpon>202005011832448_Initial.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202004202043099_AddLuckyNumber.cs" />
-    <Compile Include="Migrations\202004202043099_AddLuckyNumber.designer.cs">
-      <DependentUpon>202004202043099_AddLuckyNumber.cs</DependentUpon>
+    <Compile Include="Migrations\202005042212226_AddMeetingModel.cs" />
+    <Compile Include="Migrations\202005042212226_AddMeetingModel.designer.cs">
+      <DependentUpon>202005042212226_AddMeetingModel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202004202222573_MakePersonKey.cs" />
-    <Compile Include="Migrations\202004202222573_MakePersonKey.designer.cs">
-      <DependentUpon>202004202222573_MakePersonKey.cs</DependentUpon>
+    <Compile Include="Migrations\202005042221584_AddTimesMetToMeeting.cs" />
+    <Compile Include="Migrations\202005042221584_AddTimesMetToMeeting.designer.cs">
+      <DependentUpon>202005042221584_AddTimesMetToMeeting.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202004202248598_AddLastMet.cs" />
-    <Compile Include="Migrations\202004202248598_AddLastMet.designer.cs">
-      <DependentUpon>202004202248598_AddLastMet.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202004210100147_AddNameKey.cs" />
-    <Compile Include="Migrations\202004210100147_AddNameKey.designer.cs">
-      <DependentUpon>202004210100147_AddNameKey.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202004211523137_DropId.cs" />
-    <Compile Include="Migrations\202004211523137_DropId.designer.cs">
-      <DependentUpon>202004211523137_DropId.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202004221652477_WebApi.cs" />
-    <Compile Include="Migrations\202004221652477_WebApi.designer.cs">
-      <DependentUpon>202004221652477_WebApi.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202004240004576_MakeTimesNullable.cs" />
-    <Compile Include="Migrations\202004240004576_MakeTimesNullable.designer.cs">
-      <DependentUpon>202004240004576_MakeTimesNullable.cs</DependentUpon>
+    <Compile Include="Migrations\202005042248102_MakeTimesMetMeetingNullable.cs" />
+    <Compile Include="Migrations\202005042248102_MakeTimesMetMeetingNullable.designer.cs">
+      <DependentUpon>202005042248102_MakeTimesMetMeetingNullable.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Meeting.cs" />
     <Compile Include="Models\MyContext.cs" />
     <Compile Include="Models\Person.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -325,6 +313,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\DataTables\css\mixins.scss" />
     <Content Include="Content\DataTables\css\common.scss" />
+    <Content Include="app.manifest" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
@@ -400,6 +389,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\moment.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -419,6 +409,7 @@
     <Content Include="Views\People\Details.cshtml" />
     <Content Include="Views\People\Edit.cshtml" />
     <Content Include="Views\People\Index.cshtml" />
+    <Content Include="Scripts\tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -437,36 +428,34 @@
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202004202040098_InitialCreate.resx">
-      <DependentUpon>202004202040098_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202005011832448_Initial.resx">
+      <DependentUpon>202005011832448_Initial.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004202043099_AddLuckyNumber.resx">
-      <DependentUpon>202004202043099_AddLuckyNumber.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202005042212226_AddMeetingModel.resx">
+      <DependentUpon>202005042212226_AddMeetingModel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004202222573_MakePersonKey.resx">
-      <DependentUpon>202004202222573_MakePersonKey.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202005042221584_AddTimesMetToMeeting.resx">
+      <DependentUpon>202005042221584_AddTimesMetToMeeting.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004202248598_AddLastMet.resx">
-      <DependentUpon>202004202248598_AddLastMet.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202005042248102_MakeTimesMetMeetingNullable.resx">
+      <DependentUpon>202005042248102_MakeTimesMetMeetingNullable.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004210100147_AddNameKey.resx">
-      <DependentUpon>202004210100147_AddNameKey.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004211523137_DropId.resx">
-      <DependentUpon>202004211523137_DropId.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004221652477_WebApi.resx">
-      <DependentUpon>202004221652477_WebApi.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004240004576_MakeTimesNullable.resx">
-      <DependentUpon>202004240004576_MakeTimesNullable.cs</DependentUpon>
-    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
@@ -497,8 +486,11 @@
     <Error Condition="!Exists('packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
     <Error Condition="!Exists('packages\EntityFramework.6.4.0\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.4.0\build\EntityFramework.props'))" />
     <Error Condition="!Exists('packages\EntityFramework.6.4.0\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.4.0\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('packages\Microsoft.TypeScript.MSBuild.3.8.3\build\Microsoft.TypeScript.MSBuild.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.TypeScript.MSBuild.3.8.3\build\Microsoft.TypeScript.MSBuild.props'))" />
+    <Error Condition="!Exists('packages\Microsoft.TypeScript.MSBuild.3.8.3\build\Microsoft.TypeScript.MSBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.TypeScript.MSBuild.3.8.3\build\Microsoft.TypeScript.MSBuild.targets'))" />
   </Target>
   <Import Project="packages\EntityFramework.6.4.0\build\EntityFramework.targets" Condition="Exists('packages\EntityFramework.6.4.0\build\EntityFramework.targets')" />
+  <Import Project="packages\Microsoft.TypeScript.MSBuild.3.8.3\build\Microsoft.TypeScript.MSBuild.targets" Condition="Exists('packages\Microsoft.TypeScript.MSBuild.3.8.3\build\Microsoft.TypeScript.MSBuild.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -51,7 +51,7 @@ namespace CodeFirstMVC
         // POST: People/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Name,TimesMet,WhenMet")] Person person)
+        public ActionResult Create([Bind(Include = "Name")] Person person, Meeting meeting)
         {
             var query = db.People.Find(person.Name);
 
@@ -73,9 +73,14 @@ namespace CodeFirstMVC
                     person.TimesMet += 1;
                     Log.Information("Met {person} {times} times now.", person.Name, person.TimesMet+1); 
                 }
-                ViewBag.LastMet = person.LastMet.Humanize();
-
+                ViewBag.LastMet = person.LastMet.Humanize(); 
                 person.LastMet = DateTime.UtcNow;
+
+                meeting.Person = person;
+                meeting.Time = (DateTime)person.WhenMet;
+                meeting.TimesMet = person.TimesMet;
+                db.Meetings.Add(meeting);
+                
                 db.SaveChanges();
                 ViewBag.TimesMet = person.TimesMet.ToOrdinalWords(); 
 
@@ -106,7 +111,7 @@ namespace CodeFirstMVC
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "PersonId,Name,TimesMet,WhenMet")] Person person)
+        public ActionResult Edit([Bind(Include = "Name,TimesMet,WhenMet")] Person person)
         {
             if (ModelState.IsValid)
             {

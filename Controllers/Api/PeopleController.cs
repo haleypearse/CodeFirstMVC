@@ -23,25 +23,36 @@ namespace CodeFirstMVC.Controllers.Api
         private MyContext db = new MyContext();
 
         // GET: api/People
-        [HttpGet]
-        public IEnumerable<PersonDto> GetPeople(string searchString)
+        //[HttpGet]
+        //[ResponseType(typeof(IEnumerable<Person>))]
+
+        //public IEnumerable<Person> GetPeople(string searchString=null)
+        public IEnumerable<PersonDto> GetPeople(string searchString=null,string sort="name", bool asc=true)
         {
             var people = db.People.Where(x => true);
             if (searchString != null)
             {
-                //var query = 
-                //    from p in people
-                //    where p.Name contains searchString
-                //    select p;
-
                 people = people.Where(x => x.Name.Contains(searchString) || x.TimesMet.ToString() == searchString);
             }
-            // Try humanizing the dates. Doesn't work, can't convert date to string.
-            //var people = db.People;
-            //foreach (var person in people)
-            //{
-            //    person.WhenMet = person.WhenMet.Humanize();
-            //}
+            switch (sort)
+            {
+                case "TimesMet":
+                    if (asc == true) people = people.OrderBy(x => x.TimesMet);
+                    else people = people.OrderByDescending(x => x.TimesMet);
+                    break;
+                case "WhenMet":
+                    if (asc == true) people = people.OrderBy(x => x.WhenMet);
+                    else people = people.OrderByDescending(x => x.WhenMet);
+                    break;
+                case "LastMet":
+                    if (asc == true) people = people.OrderBy(x => x.LastMet);
+                    else people = people.OrderByDescending(x => x.LastMet);
+                    break;
+                default:
+                    if (asc == true) people = people.OrderBy(x => x.Name);
+                    else people = people.OrderByDescending(x => x.Name);
+                    break;
+            }
             //return people;
             return people.ToList().Select(Mapper.Map<Person, PersonDto>);
         }
@@ -78,7 +89,7 @@ namespace CodeFirstMVC.Controllers.Api
             db.Entry(person).State = EntityState.Modified;
 
             try
-            {
+            { 
                 await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -132,11 +143,17 @@ namespace CodeFirstMVC.Controllers.Api
         public async Task<IHttpActionResult> DeletePerson(string name)
         {
             Person person = await db.People.FindAsync(name);
+            var meetings = db.Meetings.Where(x => x.Person.Name.Contains(name));
+
             if (person == null)
             {
                 return NotFound();
             }
-
+            
+            foreach (Meeting meeting in meetings)
+            {
+                db.Meetings.Remove(meeting);
+            }
             db.People.Remove(person);
             await db.SaveChangesAsync();
 
