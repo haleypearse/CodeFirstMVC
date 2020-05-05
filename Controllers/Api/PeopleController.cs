@@ -143,11 +143,17 @@ namespace CodeFirstMVC.Controllers.Api
         public async Task<IHttpActionResult> DeletePerson(string name)
         {
             Person person = await db.People.FindAsync(name);
+            var meetings = db.Meetings.Where(x => x.Person.Name.Contains(name));
+
             if (person == null)
             {
                 return NotFound();
             }
-
+            
+            foreach (Meeting meeting in meetings)
+            {
+                db.Meetings.Remove(meeting);
+            }
             db.People.Remove(person);
             await db.SaveChangesAsync();
 

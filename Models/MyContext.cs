@@ -15,5 +15,6 @@ namespace CodeFirstMVC.Models
             this.Database.Log = s => System.Diagnostics.Debug.WriteLine(s + " MyContext Database.Log ===> ");
         }
         public DbSet<Person> People { get; set; }
+        public DbSet<Meeting> Meetings { get; set; }
     }
 }

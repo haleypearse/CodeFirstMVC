@@ -173,7 +173,20 @@
     <Compile Include="Migrations\202005011832448_Initial.designer.cs">
       <DependentUpon>202005011832448_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005042212226_AddMeetingModel.cs" />
+    <Compile Include="Migrations\202005042212226_AddMeetingModel.designer.cs">
+      <DependentUpon>202005042212226_AddMeetingModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005042221584_AddTimesMetToMeeting.cs" />
+    <Compile Include="Migrations\202005042221584_AddTimesMetToMeeting.designer.cs">
+      <DependentUpon>202005042221584_AddTimesMetToMeeting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005042248102_MakeTimesMetMeetingNullable.cs" />
+    <Compile Include="Migrations\202005042248102_MakeTimesMetMeetingNullable.designer.cs">
+      <DependentUpon>202005042248102_MakeTimesMetMeetingNullable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Meeting.cs" />
     <Compile Include="Models\MyContext.cs" />
     <Compile Include="Models\Person.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -418,9 +431,17 @@
     <EmbeddedResource Include="Migrations\202005011832448_Initial.resx">
       <DependentUpon>202005011832448_Initial.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005042212226_AddMeetingModel.resx">
+      <DependentUpon>202005042212226_AddMeetingModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005042221584_AddTimesMetToMeeting.resx">
+      <DependentUpon>202005042221584_AddTimesMetToMeeting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005042248102_MakeTimesMetMeetingNullable.resx">
+      <DependentUpon>202005042248102_MakeTimesMetMeetingNullable.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="Scripts\app.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
   </ItemGroup>
   <ItemGroup>
