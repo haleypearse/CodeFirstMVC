@@ -80,6 +80,7 @@
             }
         });
 
+        //DELETE person (and set Meetings.Person to null for those entries)
         $("#people").on("click", ".js-delete", function () {
             var button = $(this);
             if (confirm("Are you sure you want to delete this person?")) {

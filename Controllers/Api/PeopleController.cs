@@ -14,6 +14,7 @@ using CodeFirstMVC.Dtos;
 using CodeFirstMVC.Models;
 using Humanizer;
 using Microsoft.Ajax.Utilities;
+using Serilog;
 
 namespace CodeFirstMVC.Controllers.Api
 {
@@ -157,23 +158,27 @@ namespace CodeFirstMVC.Controllers.Api
             //    db.Meetings.Remove(meeting);
             //}
 
-            Person anonymousPerson = EnsureAnonymousPersonExists();
+            //Person anonymousPerson = EnsureAnonymousPersonExists();
 
-            //Change all meetings to anonymous
-            foreach (Meeting meeting in meetings)
-            {
-                System.Diagnostics.Debug.WriteLine(meeting.Person.Name);
-                meeting.Person = anonymousPerson;
-                System.Diagnostics.Debug.WriteLine("after "+ meeting.Person.Name);
+            Log.Information("Deleting person: {person} named {person.Name}, and setting their meetings {meetings} to null.", person, person.Name, meetings);
+
+            //Change all meetings.Person to null
+            foreach (Meeting meeting in meetings) meeting.Person = null;
+
+            //System.Diagnostics.Debug.WriteLine("before " + meeting.Person.Name);
+            //db.Meetings.Find(meeting.Id) = null;
+
+            //System.Diagnostics.Debug.WriteLine("after " + meeting.Person);
 
 
-            }
-
+        
+            //db.Meetings = (DbSet<Meeting>)meetings;
             //db.Entry(person).State = EntityState.Modified;
-            db.Entry(meetings).State = EntityState.Modified;
+            // db.Entry(db.Meetings).State = EntityState.Modified;
 
-            //db.People.Remove(person);
-            await db.SaveChangesAsync();
+            db.People.Remove(person);
+            db.SaveChanges();
+            
 
             return Ok(person);
         }
