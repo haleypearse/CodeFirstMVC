@@ -106,18 +106,13 @@
                     for (const person of JSON.parse(request.response)) {
                         table += "<tr>"; //new row
 
-                        //for (var column in person) { //fill in the columns 
-                        //    table += "<th>" + person[column] + "</th>";
-                        //}
+                        table += "<td><a href='" + uriVirtual + "/people/edit/" + person["name"] + "'>" + person["name"] + "</a></td>";
+                        table += "<td>" + person["timesMet"] + "</td>";
 
-                        table += "<th><a href='" + uriVirtual + "/people/edit/" + person["name"] + "'>" + person["name"] + "</a></th>";
-                        table += "<th>" + person["timesMet"] + "</th>";
+                        table += "<td>" + moment(person["whenMet"]).format(dateFormat) + "</td>";
+                        table += "<td>" + moment(person["lastMet"]).format(dateFormat) + "</td>";
 
-                        table += "<th>" + moment(person["whenMet"]).format(dateFormat) + "</th>";
-                        table += "<th>" + moment(person["lastMet"]).format(dateFormat) + "</th>";
-
-                        table += "<th><button data-person-name='" + person["name"] + "' class='btn-link js-delete'>Delete</button> <a href='" + uriVirtual + "/people/details/" + person["name"] + "'>Details</a><th>";
-
+                        table += "<td><button data-person-name='" + person["name"] + "' class='btn-link js-delete'>Delete</button> <a href='" + uriVirtual + "/people/details/" + person["name"] + "'>Details</a></td>";    
                         table += "</tr>";
                     }
 

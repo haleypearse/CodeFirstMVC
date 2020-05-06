@@ -62,6 +62,7 @@ namespace CodeFirstMVC.Controllers.Api
         [ResponseType(typeof(Person))]
         public async Task<IHttpActionResult> GetPerson(string name)
         {
+            // Find is apparently not case sensitive
             Person person = await db.People.FindAsync(name);
             if (person == null)
             {
@@ -76,6 +77,7 @@ namespace CodeFirstMVC.Controllers.Api
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutPerson(string name, Person person)
         {
+            name = name.Transform(To.TitleCase); //This helps to match entries in the db, also capitalized
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -149,12 +151,28 @@ namespace CodeFirstMVC.Controllers.Api
             {
                 return NotFound();
             }
-            
+
+            //foreach (Meeting meeting in meetings)
+            //{
+            //    db.Meetings.Remove(meeting);
+            //}
+
+            Person anonymousPerson = EnsureAnonymousPersonExists();
+
+            //Change all meetings to anonymous
             foreach (Meeting meeting in meetings)
             {
-                db.Meetings.Remove(meeting);
+                System.Diagnostics.Debug.WriteLine(meeting.Person.Name);
+                meeting.Person = anonymousPerson;
+                System.Diagnostics.Debug.WriteLine("after "+ meeting.Person.Name);
+
+
             }
-            db.People.Remove(person);
+
+            //db.Entry(person).State = EntityState.Modified;
+            db.Entry(meetings).State = EntityState.Modified;
+
+            //db.People.Remove(person);
             await db.SaveChangesAsync();
 
             return Ok(person);
@@ -170,8 +188,28 @@ namespace CodeFirstMVC.Controllers.Api
         }
 
         private bool PersonExists(string name)
+
         {
+            name = name.Transform(To.TitleCase); //This helps to match entries in the db, also capitalized
             return db.People.Count(e => e.Name == name) > 0;
+        }
+
+        private Person EnsureAnonymousPersonExists()
+        {
+            Person person = new Person();
+            Person query = db.People.Find("Anonymous");
+
+            if (query == null)
+            {
+                person.Name = "Anonymous";
+                person.TimesMet = 0;
+                db.People.Add(person);
+                db.SaveChangesAsync();
+                return person;
+            }
+
+            db.SaveChangesAsync();
+            return query;
         }
     }
 }
