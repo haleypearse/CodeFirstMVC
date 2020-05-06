@@ -14,6 +14,7 @@ using CodeFirstMVC.Dtos;
 using CodeFirstMVC.Models;
 using Humanizer;
 using Microsoft.Ajax.Utilities;
+using Serilog;
 
 namespace CodeFirstMVC.Controllers.Api
 {
@@ -62,6 +63,7 @@ namespace CodeFirstMVC.Controllers.Api
         [ResponseType(typeof(Person))]
         public async Task<IHttpActionResult> GetPerson(string name)
         {
+            // Find is apparently not case sensitive
             Person person = await db.People.FindAsync(name);
             if (person == null)
             {
@@ -76,6 +78,7 @@ namespace CodeFirstMVC.Controllers.Api
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutPerson(string name, Person person)
         {
+            name = name.Transform(To.TitleCase); //This helps to match entries in the db, also capitalized
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -149,13 +152,33 @@ namespace CodeFirstMVC.Controllers.Api
             {
                 return NotFound();
             }
-            
-            foreach (Meeting meeting in meetings)
-            {
-                db.Meetings.Remove(meeting);
-            }
+
+            //foreach (Meeting meeting in meetings)
+            //{
+            //    db.Meetings.Remove(meeting);
+            //}
+
+            //Person anonymousPerson = EnsureAnonymousPersonExists();
+
+            Log.Information("Deleting person: {person} named {person.Name}, and setting their meetings {meetings} to null.", person, person.Name, meetings);
+
+            //Change all meetings.Person to null
+            foreach (Meeting meeting in meetings) meeting.Person = null;
+
+            //System.Diagnostics.Debug.WriteLine("before " + meeting.Person.Name);
+            //db.Meetings.Find(meeting.Id) = null;
+
+            //System.Diagnostics.Debug.WriteLine("after " + meeting.Person);
+
+
+        
+            //db.Meetings = (DbSet<Meeting>)meetings;
+            //db.Entry(person).State = EntityState.Modified;
+            // db.Entry(db.Meetings).State = EntityState.Modified;
+
             db.People.Remove(person);
-            await db.SaveChangesAsync();
+            db.SaveChanges();
+            
 
             return Ok(person);
         }
@@ -170,8 +193,28 @@ namespace CodeFirstMVC.Controllers.Api
         }
 
         private bool PersonExists(string name)
+
         {
+            name = name.Transform(To.TitleCase); //This helps to match entries in the db, also capitalized
             return db.People.Count(e => e.Name == name) > 0;
+        }
+
+        private Person EnsureAnonymousPersonExists()
+        {
+            Person person = new Person();
+            Person query = db.People.Find("Anonymous");
+
+            if (query == null)
+            {
+                person.Name = "Anonymous";
+                person.TimesMet = 0;
+                db.People.Add(person);
+                db.SaveChangesAsync();
+                return person;
+            }
+
+            db.SaveChangesAsync();
+            return query;
         }
     }
 }
