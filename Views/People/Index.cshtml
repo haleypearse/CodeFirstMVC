@@ -46,6 +46,9 @@
 
 </table>
 
+<ul class="pagination" id="pagination">
+</ul>
+
 @section scripts
                 {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
@@ -60,7 +63,8 @@
     const dateFormat = "LLL";
     const request = new XMLHttpRequest();
     const columnAnchorCollection = $('.column-headers a');
-    var sort = { "column": "name", "asc": false };
+    var sort = { "column": "name", "asc": true };
+    var resjson = {};
 
     
     $(document).ready(function () {
@@ -70,7 +74,11 @@
         button.on("click", () => getTable());
 
         // Query db upon each keystroke
-        field.on('change keydown paste input', () => {getTable();});
+        field.on('change keydown paste input', () => {
+    var fieldval = field.val();
+    resjson["Query"] = field.val();
+    getTable();
+    });
 
         // Query db upon pressing enter and prevent form submit
         $(window).keydown(function (event) {
@@ -103,6 +111,12 @@
 
             request.onload = () => {
                 if (request.status === 200) {
+
+                    resjson = getResponseHeader();
+        //console.log(parsedHeader.currentPage);
+
+    
+            
                     var table = "";
                     for (const person of JSON.parse(request.response)) {
                         table += "<tr>"; //new row
@@ -118,19 +132,37 @@
                     }
 
                     document.getElementById("table-body").innerHTML = table;
+
+                            addPagination();
+
                 }
             };
 
             request.onerror = () => console.log("error");
         }
 
+        function getResponseHeader() {
+            responseHeaders = request.getAllResponseHeaders(); 
+
+            // a Hacky way of getting the right header
+            desiredHeader = responseHeaders.split('paging-headers: ')[1].split('\n')[0];
+            return JSON.parse(desiredHeader);
+        }
         function getUri() {
-            var uri = uriBase;
+            var uri = uriBase + "?";
 
-            var val = field.val();
-            uri += "?searchString=" + val;
 
-            uri += "&sort=" + sort["column"] + "&asc=" + sort["asc"];
+            for (param in resjson) {
+                //console.log(x + " " + resjson[x])
+                if (resjson[param]) uri += "&" + param + "=" + resjson[param];
+                console.log(param + ": " + resjson[param]);
+            }
+                console.log(uri);
+
+           // uri += "Query=" + field.val();
+           // uri += "&SortBy=" + sort["column"] + "&SortOrder=" + sort["asc"];
+
+            
 
             return uri;
         }
@@ -144,19 +176,38 @@
         //Click sort handler
 
         function clickSortHandler() {
-            var paramName = this.innerHTML.replace(/\s/g, ''); //Strip white space, use anchor text in sort dictionary
+            // Generate parameter names from anchor tags, strip white space 
+            var paramName = this.innerHTML.replace(/\s/g, ''); 
             
+            // If already applied, toggle ascending
             if (sort["column"] == paramName) { 
-                sort["asc"] = !sort["asc"]; //If already applied, swap order
+                sort["asc"] = !sort["asc"];
             }
-            else sort["column"] = paramName; //Apply new sort column
+            else {
+                // Apply new sort column
+                sort["column"] = paramName;
+                // restore default sort order
+                sort["asc"] = true; //ascDefaults[paramName];
+            }
+            resjson["SortBy"] = sort["column"];
+            resjson["SortOrder"] = sort["asc"];
+            
 
             getTable(); //Refresh the table
 
         }
+        
+        function addPagination() {
+            var pagination = "";
 
+            for (i = 1; i < 1+resjson.totalPages; i++) {
+                pagination += "<li><a href='#'>" + i + "</a></li>"
+            }
+            document.getElementById("pagination").innerHTML = pagination;
+        }
+        
         addColumnSortLinks();
-        getTable()
+        getTable();
     });
 </script>
 }

@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 using AutoMapper;
@@ -14,6 +16,7 @@ using CodeFirstMVC.Dtos;
 using CodeFirstMVC.Models;
 using Humanizer;
 using Microsoft.Ajax.Utilities;
+using Newtonsoft.Json;
 using Serilog;
 
 namespace CodeFirstMVC.Controllers.Api
@@ -28,34 +31,90 @@ namespace CodeFirstMVC.Controllers.Api
         //[ResponseType(typeof(IEnumerable<Person>))]
 
         //public IEnumerable<Person> GetPeople(string searchString=null)
-        public IEnumerable<PersonDto> GetPeople(string searchString=null,string sort="name", bool asc=true)
+        public IEnumerable<PersonDto> GetPeople([FromUri] PagingParameterModel pagingparametermodel)
         {
             var people = db.People.Where(x => true);
-            if (searchString != null)
-            {
-                people = people.Where(x => x.Name.Contains(searchString) || x.TimesMet.ToString() == searchString);
-            }
-            switch (sort)
+
+            var listy = people.ToList();
+
+            // Get search query
+            string query = pagingparametermodel.Query;
+
+            // Get sort order
+            string sortBy = pagingparametermodel.SortBy;
+            
+            // Get sort order
+            bool sortOrder = pagingparametermodel.SortOrder;
+
+            // Do filtering
+            if (query != null) people = people.Where(x => x.Name.Contains(query) || x.TimesMet.ToString() == query);
+            
+            // Do sorting
+            switch (sortBy)
             {
                 case "TimesMet":
-                    if (asc == true) people = people.OrderBy(x => x.TimesMet);
+                    if (sortOrder == true) people = people.OrderBy(x => x.TimesMet);
                     else people = people.OrderByDescending(x => x.TimesMet);
                     break;
                 case "WhenMet":
-                    if (asc == true) people = people.OrderBy(x => x.WhenMet);
+                    if (sortOrder == true) people = people.OrderBy(x => x.WhenMet);
                     else people = people.OrderByDescending(x => x.WhenMet);
                     break;
                 case "LastMet":
-                    if (asc == true) people = people.OrderBy(x => x.LastMet);
+                    if (sortOrder == true) people = people.OrderBy(x => x.LastMet);
                     else people = people.OrderByDescending(x => x.LastMet);
                     break;
                 default:
-                    if (asc == true) people = people.OrderBy(x => x.Name);
+                    if (sortOrder == true) people = people.OrderBy(x => x.Name);
                     else people = people.OrderByDescending(x => x.Name);
                     break;
             }
+
+            // Get's No of Rows Count   
+            int count = people.Count();
+
+            // Parameter is passed from Query string if it is null then it default Value will be pageNumber:1  
+            int CurrentPage = pagingparametermodel.pageNumber;
+
+            // Parameter is passed from Query string if it is null then it default Value will be pageSize:20  
+            int PageSize = pagingparametermodel.pageSize;
+
+            // Display TotalCount to Records to User  
+            int TotalCount = count;
+
+            // Calculating Totalpage by Dividing (No of Records / Pagesize)  
+            int TotalPages = (int)Math.Ceiling(count / (double)PageSize);
+
+            // Returns List of Customer after applying Paging   
+            var returnpeople = people.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
+
+            // if CurrentPage is greater than 1 means it has previousPage  
+            var previousPage = CurrentPage > 1 ? "Yes" : "No";
+
+            // if TotalPages is greater than CurrentPage means it has nextPage  
+            var nextPage = CurrentPage < TotalPages ? "Yes" : "No";
+
+            // Object which we are going to send in header   
+            var paginationMetadata = new
+            {
+                Query = query,
+                SortBy = sortBy,
+                SortOrder = sortOrder,
+                totalCount = TotalCount,
+                pageSize = PageSize,
+                currentPage = CurrentPage,
+                totalPages = TotalPages,
+                previousPage,
+                nextPage
+            };
+
+            //ViewBag.paginationMetadata = paginationMetadata;
+            // Setting Header  
+            HttpContext.Current.Response.Headers.Add("Paging-Headers", JsonConvert.SerializeObject(paginationMetadata));
+            //HttpContext.Current.Response.Headers.Add()
+
             //return people;
-            return people.ToList().Select(Mapper.Map<Person, PersonDto>);
+            return returnpeople.ToList().Select(Mapper.Map<Person, PersonDto>);
         }
 
         // GET: api/People/5
