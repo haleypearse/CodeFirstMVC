@@ -12,11 +12,14 @@
 
 @using (Html.BeginForm("Index", "People", FormMethod.Get)) //Use the Get method so search parameters are preserved in URI
 {
-    <p class="form-inline">
-        Filter: @*@Html.TextBox("SearchString", "", new { @class = "form-control", @id = "filter-field", @value = "hal" })*@
-        <input class="form-control" id="filter-field" name="SearchString" type="text" value="@ViewBag.searchString" />
-        <input id="filter-button" type="button" value="Filter" class="btn btn-default" />
-    </p>
+<p class="form-inline">
+    Filter: @*@Html.TextBox("SearchString", "", new { @class = "form-control", @id = "filter-field", @value = "hal" })*@
+    <input class="form-control" id="filter-field" name="SearchString" type="text" value="@ViewBag.searchString" />
+    <input id="filter-button" type="button" value="Filter" class="btn btn-default" />
+    
+    <ul class="pagination" id="pagination">
+    </ul>
+</p>
 }
 
 @*<p>
@@ -41,13 +44,12 @@
         </tr>
     </thead>
 
-    <tbody id="table-body"> @*This gets filled in *@
+    <tbody id="table-body"> @*This gets filled in by script*@
     </tbody>
 
 </table>
 
-<ul class="pagination" id="pagination">
-</ul>
+
 
 @section scripts
                 {
@@ -69,16 +71,19 @@
     
     $(document).ready(function () {
 
+
+        // --- ADD EVENT LISTENERS ---
+
         // Query db upon button press
         //console.log(button);
         button.on("click", () => getTable());
 
         // Query db upon each keystroke
         field.on('change keydown paste input', () => {
-    var fieldval = field.val();
-    resjson["Query"] = field.val();
-    getTable();
-    });
+            var fieldval = field.val();
+            resjson["Query"] = field.val();
+            getTable();
+        });
 
         // Query db upon pressing enter and prevent form submit
         $(window).keydown(function (event) {
@@ -93,17 +98,30 @@
             var button = $(this);
             if (confirm("Are you sure you want to delete this person?")) {
                 //console.log("confirm delete");
-                    $.ajax({ // The jQuery ajax function
-                        url: uriBase + "/" + $(button).attr("data-person-name"),
-                        method: "DELETE",
-                        success: function () {
-                            console.log("success filter button");
-                            button.parents("tr").remove();
-                        }
-                    })
-                
+                $.ajax({ // The jQuery ajax function
+                    url: uriBase + "/" + $(button).attr("data-person-name"),
+                    method: "DELETE",
+                    success: function () {
+                        console.log("success filter button");
+                        button.parents("tr").remove();
+                    }
+                })
+
             };
+        });
+
+
+        $("#pagination").on("click", ".pagination-link", function () {
+            // this = <a class="pagination-link" href="#" data-page="1">1</a>
+            // console.log(this.getAttribute("data-page")); // "1"
+
+            
+            resjson["pageNumber"] = this.getAttribute("data-page");
+            getTable();
         })
+
+
+        // --- FUNCTIONS ---
 
         function getTable() {
             request.open('GET', getUri());
@@ -115,7 +133,7 @@
                     resjson = getResponseHeader();
         //console.log(parsedHeader.currentPage);
 
-    
+
             
                     var table = "";
                     for (const person of JSON.parse(request.response)) {
@@ -127,13 +145,13 @@
                         table += "<td>" + moment(person["whenMet"]).format(dateFormat) + "</td>";
                         table += "<td>" + moment(person["lastMet"]).format(dateFormat) + "</td>";
 
-                        table += "<td><button data-person-name='" + person["name"] + "' class='btn-link js-delete'>Delete</button> <a href='" + uriVirtual + "/people/details/" + person["name"] + "'>Details</a></td>";    
+                        table += "<td><button data-person-name='" + person["name"] + "' class='btn-link js-delete'>Delete</button> <a href='" + uriVirtual + "/people/details/" + person["name"] + "'>Details</a></td>";
                         table += "</tr>";
                     }
 
                     document.getElementById("table-body").innerHTML = table;
 
-                            addPagination();
+                    addPagination();
 
                 }
             };
@@ -155,7 +173,7 @@
             for (param in resjson) {
                 //console.log(x + " " + resjson[x])
                 if (resjson[param]) uri += "&" + param + "=" + resjson[param];
-                console.log(param + ": " + resjson[param]);
+                //console.log(param + ": " + resjson[param]);
             }
                 console.log(uri);
 
@@ -172,8 +190,6 @@
                 a.addEventListener("click", clickSortHandler);
             }
         }
-
-        //Click sort handler
 
         function clickSortHandler() {
             // Generate parameter names from anchor tags, strip white space 
@@ -201,11 +217,13 @@
             var pagination = "";
 
             for (i = 1; i < 1+resjson.totalPages; i++) {
-                pagination += "<li><a href='#'>" + i + "</a></li>"
+                pagination += "<li><a class='pagination-link' href='#' data-page='" + i + "'>" + i + "</a></li>"
             }
             document.getElementById("pagination").innerHTML = pagination;
         }
-        
+
+        // --- RUN ON LOAD ---
+
         addColumnSortLinks();
         getTable();
     });
