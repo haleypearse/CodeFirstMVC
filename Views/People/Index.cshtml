@@ -12,14 +12,14 @@
 
 @using (Html.BeginForm("Index", "People", FormMethod.Get)) //Use the Get method so search parameters are preserved in URI
 {
-<p class="form-inline">
-    Filter: @*@Html.TextBox("SearchString", "", new { @class = "form-control", @id = "filter-field", @value = "hal" })*@
-    <input class="form-control" id="filter-field" name="SearchString" type="text" value="@ViewBag.searchString" />
-    <input id="filter-button" type="button" value="Filter" class="btn btn-default" />
-    
-    <ul class="pagination" id="pagination">
-    </ul>
-</p>
+    <p class="form-inline">
+        Filter: @*@Html.TextBox("SearchString", "", new { @class = "form-control", @id = "filter-field", @value = "hal" })*@
+        <input class="form-control" id="filter-field" name="SearchString" type="text" value="@ViewBag.searchString" />
+        <input id="filter-button" type="button" value="Filter" class="btn btn-default" />
+
+        <ul class="pagination" id="pagination">
+        </ul>
+    </p>
 }
 
 @*<p>
@@ -44,7 +44,8 @@
         </tr>
     </thead>
 
-    <tbody id="table-body"> @*This gets filled in by script*@
+    <tbody id="table-body">
+        @*This gets filled in by script*@
     </tbody>
 
 </table>
@@ -53,179 +54,7 @@
 
 @section scripts
                 {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    
-    @*<script src="~/Scripts/app.js"></script>*@
-    
-<script>
-    const uriBase = '/CodeFirstMVC/api/people';
-    const uriVirtual = '/CodeFirstMVC';
-    const field = $("#filter-field");
-    const button = $("#filter-button");
-    const dateFormat = "LLL";
-    const request = new XMLHttpRequest();
-    const columnAnchorCollection = $('.column-headers a');
-    var sort = { "column": "name", "asc": true };
-    var resjson = {};
-
-    
-    $(document).ready(function () {
 
 
-        // --- ADD EVENT LISTENERS ---
-
-        // Query db upon button press
-        //console.log(button);
-        button.on("click", () => getTable());
-
-        // Query db upon each keystroke
-        field.on('change keydown paste input', () => {
-            var fieldval = field.val();
-            resjson["Query"] = field.val();
-            getTable();
-        });
-
-        // Query db upon pressing enter and prevent form submit
-        $(window).keydown(function (event) {
-            if (event.keyCode == 13) {
-                event.preventDefault(); //Don't submit the form
-                getTable();
-            }
-        });
-
-        //DELETE person (and set Meetings.Person to null for those entries)
-        $("#people").on("click", ".js-delete", function () {
-            var button = $(this);
-            if (confirm("Are you sure you want to delete this person?")) {
-                //console.log("confirm delete");
-                $.ajax({ // The jQuery ajax function
-                    url: uriBase + "/" + $(button).attr("data-person-name"),
-                    method: "DELETE",
-                    success: function () {
-                        console.log("success filter button");
-                        button.parents("tr").remove();
-                    }
-                })
-
-            };
-        });
-
-
-        $("#pagination").on("click", ".pagination-link", function () {
-            // this = <a class="pagination-link" href="#" data-page="1">1</a>
-            // console.log(this.getAttribute("data-page")); // "1"
-
-            
-            resjson["pageNumber"] = this.getAttribute("data-page");
-            getTable();
-        })
-
-
-        // --- FUNCTIONS ---
-
-        function getTable() {
-            request.open('GET', getUri());
-            request.send();
-
-            request.onload = () => {
-                if (request.status === 200) {
-
-                    resjson = getResponseHeader();
-        //console.log(parsedHeader.currentPage);
-
-
-            
-                    var table = "";
-                    for (const person of JSON.parse(request.response)) {
-                        table += "<tr>"; //new row
-
-                        table += "<td><a href='" + uriVirtual + "/people/edit/" + person["name"] + "'>" + person["name"] + "</a></td>";
-                        table += "<td>" + person["timesMet"] + "</td>";
-
-                        table += "<td>" + moment(person["whenMet"]).format(dateFormat) + "</td>";
-                        table += "<td>" + moment(person["lastMet"]).format(dateFormat) + "</td>";
-
-                        table += "<td><button data-person-name='" + person["name"] + "' class='btn-link js-delete'>Delete</button> <a href='" + uriVirtual + "/people/details/" + person["name"] + "'>Details</a></td>";
-                        table += "</tr>";
-                    }
-
-                    document.getElementById("table-body").innerHTML = table;
-
-                    addPagination();
-
-                }
-            };
-
-            request.onerror = () => console.log("error");
-        }
-
-        function getResponseHeader() {
-            responseHeaders = request.getAllResponseHeaders(); 
-
-            // a Hacky way of getting the right header
-            desiredHeader = responseHeaders.split('paging-headers: ')[1].split('\n')[0];
-            return JSON.parse(desiredHeader);
-        }
-        function getUri() {
-            var uri = uriBase + "?";
-
-
-            for (param in resjson) {
-                //console.log(x + " " + resjson[x])
-                if (resjson[param]) uri += "&" + param + "=" + resjson[param];
-                //console.log(param + ": " + resjson[param]);
-            }
-                console.log(uri);
-
-           // uri += "Query=" + field.val();
-           // uri += "&SortBy=" + sort["column"] + "&SortOrder=" + sort["asc"];
-
-            
-
-            return uri;
-        }
-
-        function addColumnSortLinks() {
-            for (var a of columnAnchorCollection) {
-                a.addEventListener("click", clickSortHandler);
-            }
-        }
-
-        function clickSortHandler() {
-            // Generate parameter names from anchor tags, strip white space 
-            var paramName = this.innerHTML.replace(/\s/g, ''); 
-            
-            // If already applied, toggle ascending
-            if (sort["column"] == paramName) { 
-                sort["asc"] = !sort["asc"];
-            }
-            else {
-                // Apply new sort column
-                sort["column"] = paramName;
-                // restore default sort order
-                sort["asc"] = true; //ascDefaults[paramName];
-            }
-            resjson["SortBy"] = sort["column"];
-            resjson["SortOrder"] = sort["asc"];
-            
-
-            getTable(); //Refresh the table
-
-        }
-        
-        function addPagination() {
-            var pagination = "";
-
-            for (i = 1; i < 1+resjson.totalPages; i++) {
-                pagination += "<li><a class='pagination-link' href='#' data-page='" + i + "'>" + i + "</a></li>"
-            }
-            document.getElementById("pagination").innerHTML = pagination;
-        }
-
-        // --- RUN ON LOAD ---
-
-        addColumnSortLinks();
-        getTable();
-    });
-</script>
+    <script type="module" src='~/Scripts/app.js'></script>
 }

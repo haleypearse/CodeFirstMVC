@@ -28,9 +28,9 @@ namespace CodeFirstMVC
 
 
             Log.Logger = new LoggerConfiguration()
-    .WriteTo.Seq("http://localhost:5341/")
-    .WriteTo.File("codefirstlogs.txt", rollingInterval: RollingInterval.Day)
-    .CreateLogger();
+                .WriteTo.Seq("http://localhost:5341/")
+                .WriteTo.File("codefirstlogs.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
 
 
         }
