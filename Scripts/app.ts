@@ -4,19 +4,20 @@ import * as bootbox from '../Scripts/bootbox.min.js';
 var uri = '/CodeFirstMVC/api/people';
 
 
-const uriBase = '/CodeFirstMVC/api/people';
+const uriBase = '/api/people';
 const uriVirtual = '/CodeFirstMVC';
 const field = $("#filter-field");
 const button = $("#filter-button");
 const dateFormat = "LLL";
 const request = new XMLHttpRequest();
-const columnAnchorCollection = document.getElementsByClassName(".column-headers"); // $('.column-headers a');
+const columnAnchorCollection = document.getElementsByClassName("column-sort-link"); // $('.column-headers a');
 var sort = { "column": "name", "asc": true };
 var resjson = {};
 var responseHeaders = "";
 
 
 $(document).ready(function () {
+   // window.onload(function () {
 
 
     // --- FUNCTIONS ---
@@ -31,8 +32,10 @@ $(document).ready(function () {
     }
 
     function getUri() {
-        var uri = uriBase + "?";
-
+        var uri = uriBase;
+        uri += "?"; 
+        if (resjson[0]) {}
+        
 
         for (var param in resjson) {
             //console.log(x + " " + resjson[x])
@@ -50,11 +53,14 @@ $(document).ready(function () {
     }
 
     function addColumnSortLinks() {
+        
         for (var a of columnAnchorCollection) {
+            //console.log(a); 
+
             a.addEventListener("click", clickSortHandler);
-            console.log(a);
         }
     }
+
 
         function clickSortHandler() {
             // Generate parameter names from anchor tags, strip white space 
@@ -87,7 +93,9 @@ $(document).ready(function () {
             document.getElementById("pagination").innerHTML = pagination;
         }
 
-        function getTable() {
+    function getTable() {
+        addColumnSortLinks();
+
             request.open('GET', getUri());
             request.send();
 
@@ -178,8 +186,9 @@ $("#pagination").on("click", ".pagination-link", function () {
 
 
     // --- RUN ON LOAD ---
+
     getTable();
 
 
-    addColumnSortLinks();
+
 });

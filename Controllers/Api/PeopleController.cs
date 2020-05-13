@@ -33,6 +33,7 @@ namespace CodeFirstMVC.Controllers.Api
         //public IEnumerable<Person> GetPeople(string searchString=null)
         public IEnumerable<PersonDto> GetPeople([FromUri] PagingParameterModel pagingparametermodel)
         {
+
             var people = db.People.Where(x => true);
 
             var listy = people.ToList();

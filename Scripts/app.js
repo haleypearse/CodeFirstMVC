@@ -1,15 +1,16 @@
 var uri = '/CodeFirstMVC/api/people';
-const uriBase = '/CodeFirstMVC/api/people';
+const uriBase = '/api/people';
 const uriVirtual = '/CodeFirstMVC';
 const field = $("#filter-field");
 const button = $("#filter-button");
 const dateFormat = "LLL";
 const request = new XMLHttpRequest();
-const columnAnchorCollection = document.getElementsByClassName(".column-headers"); // $('.column-headers a');
+const columnAnchorCollection = document.getElementsByClassName("column-sort-link"); // $('.column-headers a');
 var sort = { "column": "name", "asc": true };
 var resjson = {};
 var responseHeaders = "";
 $(document).ready(function () {
+    // window.onload(function () {
     // --- FUNCTIONS ---
     function getResponseHeader() {
         responseHeaders = request.getAllResponseHeaders();
@@ -18,7 +19,9 @@ $(document).ready(function () {
         return JSON.parse(responseHeaders);
     }
     function getUri() {
-        var uri = uriBase + "?";
+        var uri = uriBase;
+        uri += "?";
+        if (resjson[0]) { }
         for (var param in resjson) {
             //console.log(x + " " + resjson[x])
             if (resjson[param])
@@ -32,6 +35,7 @@ $(document).ready(function () {
     }
     function addColumnSortLinks() {
         for (var a of columnAnchorCollection) {
+            //console.log(a); 
             a.addEventListener("click", clickSortHandler);
         }
     }
@@ -60,6 +64,7 @@ $(document).ready(function () {
         document.getElementById("pagination").innerHTML = pagination;
     }
     function getTable() {
+        addColumnSortLinks();
         request.open('GET', getUri());
         request.send();
         request.onload = () => {
@@ -71,6 +76,7 @@ $(document).ready(function () {
                     table += "<tr>"; //new row
                     table += "<td><a href='" + uriVirtual + "/people/edit/" + person["name"] + "'>" + person["name"] + "</a></td>";
                     table += "<td>" + person["timesMet"] + "</td>";
+                    // moment.js is giving an error: https://github.com/moment/moment/issues/2395
                     //table += "<td>" + moment(person["whenMet"]).format(dateFormat) + "</td>";
                     //table += "<td>" + moment(person["lastMet"]).format(dateFormat) + "</td>";
                     table += "<td>" + person["whenMet"] + "</td>";
@@ -124,7 +130,6 @@ $(document).ready(function () {
         getTable();
     });
     // --- RUN ON LOAD ---
-    addColumnSortLinks();
     getTable();
 });
 //# sourceMappingURL=app.js.map
