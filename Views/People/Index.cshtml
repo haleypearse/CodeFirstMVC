@@ -12,14 +12,21 @@
 
 @using (Html.BeginForm("Index", "People", FormMethod.Get)) //Use the Get method so search parameters are preserved in URI
 {
-    <p class="form-inline">
-        Filter: @*@Html.TextBox("SearchString", "", new { @class = "form-control", @id = "filter-field", @value = "hal" })*@
-        <input class="form-control" id="filter-field" name="SearchString" type="text" value="@ViewBag.searchString" />
-        <input id="filter-button" type="button" value="Filter" class="btn btn-default" />
+    <div class="form-inline">
+        <div class="form-group">
 
-        <ul class="pagination" id="pagination">
-        </ul>
-    </p>
+            Filter: @*@Html.TextBox("SearchString", "", new { @class = "form-control", @id = "filter-field", @value = "hal" })*@
+            <input class="form-control" id="filter-field" name="SearchString" type="text" value="@ViewBag.searchString" />
+            <input id="filter-button" type="button" value="Filter" class="btn btn-default" />
+
+        </div>
+        <div class="form-group">
+            <ul class="pagination" id="pagination">
+                
+            </ul>
+        </div>
+    </div>
+
 }
 
 @*<p>

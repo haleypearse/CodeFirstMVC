@@ -24,5 +24,9 @@ namespace CodeFirstMVC.Models
         [Display(Name = "Last Met")]
 
         public Nullable<DateTime> LastMet { get; set; }
+        public string HumanizedWhenMet { get; set; }
+        public string HumanizedLastMet { get; set; }
+
+
     }
 }

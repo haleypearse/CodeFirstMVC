@@ -185,6 +185,10 @@
     <Compile Include="Migrations\202005042248102_MakeTimesMetMeetingNullable.designer.cs">
       <DependentUpon>202005042248102_MakeTimesMetMeetingNullable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005131731050_AddHumanizedDatesToPersonModel.cs" />
+    <Compile Include="Migrations\202005131731050_AddHumanizedDatesToPersonModel.designer.cs">
+      <DependentUpon>202005131731050_AddHumanizedDatesToPersonModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Meeting.cs" />
     <Compile Include="Models\MyContext.cs" />
@@ -444,6 +448,9 @@
     <EmbeddedResource Include="Migrations\202005042248102_MakeTimesMetMeetingNullable.resx">
       <DependentUpon>202005042248102_MakeTimesMetMeetingNullable.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005131731050_AddHumanizedDatesToPersonModel.resx">
+      <DependentUpon>202005131731050_AddHumanizedDatesToPersonModel.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Scripts\app.ts" />
@@ -475,7 +482,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>3650</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/CodeFirstMVC</IISUrl>
+          <IISUrl>http://localhost:82</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

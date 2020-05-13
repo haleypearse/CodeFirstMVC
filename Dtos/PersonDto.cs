@@ -20,5 +20,7 @@ namespace CodeFirstMVC.Dtos
         public DateTime WhenMet { get; set; }
 
         public DateTime LastMet { get; set; }
+        public string HumanizedWhenMet { get; set; }
+        public string HumanizedLastMet { get; set; }
     }
 }

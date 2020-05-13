@@ -95,6 +95,20 @@ namespace CodeFirstMVC.Controllers.Api
             // if TotalPages is greater than CurrentPage means it has nextPage  
             var nextPage = CurrentPage < TotalPages ? "Yes" : "No";
 
+            returnpeople.ForEach(x => x.HumanizedWhenMet = x.WhenMet.Humanize());
+            returnpeople.ForEach(x => x.HumanizedLastMet = x.LastMet.Humanize());
+
+            //var returnpeople = 
+            //for (Person person in pagepeople)
+            //{
+
+            //}
+
+
+            //    // = returnpeople.LastMet.Humanize();
+            //Console.WriteLine(returnpeople).;
+
+
             // Object which we are going to send in header   
             var paginationMetadata = new
             {

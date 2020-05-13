@@ -71,6 +71,7 @@ $(document).ready(function () {
             if (request.status === 200) {
                 resjson = getResponseHeader();
                 //console.log(parsedHeader.currentPage);
+                console.log(JSON.parse(request.response));
                 var table = "";
                 for (const person of JSON.parse(request.response)) {
                     table += "<tr>"; //new row
@@ -79,8 +80,8 @@ $(document).ready(function () {
                     // moment.js is giving an error: https://github.com/moment/moment/issues/2395
                     //table += "<td>" + moment(person["whenMet"]).format(dateFormat) + "</td>";
                     //table += "<td>" + moment(person["lastMet"]).format(dateFormat) + "</td>";
-                    table += "<td>" + person["whenMet"] + "</td>";
-                    table += "<td>" + person["lastMet"] + "</td>";
+                    table += "<td>" + person["humanizedWhenMet"] + "</td>";
+                    table += "<td>" + person["humanizedLastMet"] + "</td>";
                     table += "<td><button data-person-name='" + person["name"] + "' class='btn-link js-delete'>Delete</button> <a href='" + uriVirtual + "/people/details/" + person["name"] + "'>Details</a></td>";
                     table += "</tr>";
                 }
